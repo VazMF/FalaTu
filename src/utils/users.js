@@ -6,7 +6,7 @@ const addUser = ({ id, username, room }) => {
 
     if (!username || !room) {
         return {
-            error: 'Username and room are required!'
+            error: 'Informe uma sala e um nome de usuário!'
         }
     }
 
@@ -16,7 +16,7 @@ const addUser = ({ id, username, room }) => {
 
     if (existingUser) {
         return {
-            error: 'Username is in use'
+            error: 'Esse nome já está sendo usado.'
         }
     }
 
