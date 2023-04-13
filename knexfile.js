@@ -1,13 +1,15 @@
-import { DB_HOST, DB_USER, DB_PASS, DB_PORT, DB_DATABASE } from './settings';
+const settings = require('./settings')
 
-export const development = {
+const development = {
     client: 'mysql',
     connection: {
-        host: DB_HOST,
-        user: DB_USER,
-        password: DB_PASS,
-        port: DB_PORT,
-        database: DB_DATABASE
+        host: settings.DB_HOST,
+        user: settings.DB_USER,
+        password: settings.DB_PASS,
+        port: settings.DB_PORT,
+        database: settings.DB_DATABASE
     },
     debug: true
 };
+
+module.exports = development

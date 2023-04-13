@@ -1,5 +1,6 @@
-import { createConnection } from 'mysql';
-import { DB_HOST, DB_USER, DB_PASS, DB_PORT, DB_DATABASE } from '../settings';
+const mysql = require('mysql')
+
+const settings = require('./settings')
 
 const database = createConnection({
     host: DB_HOST,
