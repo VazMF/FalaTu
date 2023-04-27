@@ -1,5 +1,6 @@
 const path = require('path')
 const http = require('http')
+const bcrypt = require('bcryptjs')
 const express = require('express')
 const socketio = require('socket.io')
 const Filter = require('bad-words')
@@ -19,11 +20,22 @@ io.on('connection', (socket) => {
     console.log('New WebSocket connection.');
 
     socket.on('join', (options, callback) => {
-        const { error, user } = addUser({ id: socket.id, ...options })
+        const { error, user, password } = addUser({ id: socket.id, ...options })
 
         if (error) {
             return callback(error)
         }
+
+        console.log('Usuário', user);
+        console.log('password', password);
+
+        const passwordMatch = bcrypt.compareSync(password, user.hash_password);
+        console.log(passwordMatch);
+        if (passwordMatch === false) {
+            console.log('entrou');
+            return callback('Senha incorreta');
+        }
+        console.log('embaixo');
 
         socket.join(user.room)
 

@@ -7,33 +7,22 @@ const addUser = ({ id, username, password, room }) => {
     password = password.trim()
     room = room.trim().toLowerCase()
 
-    const hash_password = bcrypt.hashSync(password, 10);
-
-    if (!username || !room) {
-        return new Error('Informe uma sala e um nome de usuário!')
+    if (!username || !room || !password) {
+        return {
+            error: 'Informe uma sala e um nome de usuário!'
+        }
     }
 
-    const existingUser = users.find((user) => user.room === room && user.username === username)
-
-    if (existingUser) {
-        return new Error('Esse nome já está sendo usado.')
-    }
-
-    const userInsertQuery = 'INSERT INTO user (username, password) VALUES (?, ?)'
-    const userInsertValues = [username, hash_password]
-
-    const roomInsertQuery = 'INSERT INTO room (name) VALUES (?)'
-    const roomInsertValues = [room]
-
+    const hash_password = bcrypt.hashSync(password, 10)
     const user = { id, username, hash_password, room }
-
-    database.query(userInsertQuery, userInsertValues, (error, result) => {
+    
+    database.query('INSERT INTO user (username, password) VALUES (?, ?)', [username, hash_password], (error, result) => {
         if (error) {
             return error
         }
     })
 
-    database.query(roomInsertQuery, roomInsertValues, (error, result) => {
+    database.query('INSERT INTO room (name) VALUES (?)', [room], (error, result) => {
         if (error) {
             return error
         }
@@ -65,7 +54,7 @@ const addUser = ({ id, username, password, room }) => {
         })
     })
     users.push(user)
-    return { user }
+    return { user, password }
 }
 
 const removeUser = (id) => {
