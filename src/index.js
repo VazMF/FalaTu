@@ -19,27 +19,6 @@ app.use(express.static(publicDirectoryPath))
 io.on('connection', (socket) => {
     console.log('New WebSocket connection.');
 
-    // socket.on('join', (options, callback) => {
-    //     const { error, user } = addUser({ id: socket.id, ...options })
-
-    //     if (error) {
-    //         return callback(error)
-    //     }
-
-    //     socket.join(user.room)
-
-    //     socket.emit('message', generateMessage('Adm', 'E aí? Seja bem-vindo!'))
-
-    //     socket.broadcast.to(user.room).emit('message', generateMessage('Adm', `${user.username} acabou de aparecer!`))
-
-    //     io.to(user.room).emit('roomData', {
-    //         room: user.room,
-    //         users: getUsersInRoom(user.room)
-    //     })
-
-    //     callback()
-    // })
-
     socket.on('join', (options, callback) => {
         addUser({ id: socket.id, ...options }, (error, data) => {
             if (error) {
