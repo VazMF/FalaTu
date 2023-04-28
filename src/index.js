@@ -19,37 +19,48 @@ app.use(express.static(publicDirectoryPath))
 io.on('connection', (socket) => {
     console.log('New WebSocket connection.');
 
+    // socket.on('join', (options, callback) => {
+    //     const { error, user } = addUser({ id: socket.id, ...options })
+
+    //     if (error) {
+    //         return callback(error)
+    //     }
+
+    //     socket.join(user.room)
+
+    //     socket.emit('message', generateMessage('Adm', 'E aí? Seja bem-vindo!'))
+
+    //     socket.broadcast.to(user.room).emit('message', generateMessage('Adm', `${user.username} acabou de aparecer!`))
+
+    //     io.to(user.room).emit('roomData', {
+    //         room: user.room,
+    //         users: getUsersInRoom(user.room)
+    //     })
+
+    //     callback()
+    // })
+
     socket.on('join', (options, callback) => {
-        const { error, user, password } = addUser({ id: socket.id, ...options })
+        addUser({ id: socket.id, ...options }, (error, data) => {
+            if (error) {
+                return callback(error);
+            }
 
-        if (error) {
-            return callback(error)
-        }
+            const { user, password } = data;
 
-        console.log('Usuário', user);
-        console.log('password', password);
+            socket.join(user.room);
+            
+            socket.emit('message', generateMessage('Adm', 'E aí? Seja bem-vindo!'));
+            socket.broadcast.to(user.room).emit('message', generateMessage('Adm', `${user.username} acabou de aparecer!`));
+            io.to(user.room).emit('roomData', {
+                room: user.room,
+                users: getUsersInRoom(user.room),
+            });
 
-        const passwordMatch = bcrypt.compareSync(password, user.hash_password);
-        console.log(passwordMatch);
-        if (passwordMatch === false) {
-            console.log('entrou');
-            return callback('Senha incorreta');
-        }
-        console.log('embaixo');
+            callback(null, { user, password });
+        });
+    });
 
-        socket.join(user.room)
-
-        socket.emit('message', generateMessage('Adm', 'E aí? Seja bem-vindo!'))
-
-        socket.broadcast.to(user.room).emit('message', generateMessage('Adm', `${user.username} acabou de aparecer!`))
-
-        io.to(user.room).emit('roomData', {
-            room: user.room,
-            users: getUsersInRoom(user.room)
-        })
-
-        callback()
-    })
 
     socket.on('sendMessage', (message, callback) => {
         const user = getUser(socket.id)
