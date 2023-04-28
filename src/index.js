@@ -1,5 +1,6 @@
 const path = require('path')
 const http = require('http')
+const bcrypt = require('bcryptjs')
 const express = require('express')
 const socketio = require('socket.io')
 const Filter = require('bad-words')
@@ -19,25 +20,26 @@ io.on('connection', (socket) => {
     console.log('New WebSocket connection.');
 
     socket.on('join', (options, callback) => {
-        const { error, user } = addUser({ id: socket.id, ...options })
+        addUser({ id: socket.id, ...options }, (error, data) => {
+            if (error) {
+                return callback(error);
+            }
 
-        if (error) {
-            return callback(error)
-        }
+            const { user, password } = data;
 
-        socket.join(user.room)
+            socket.join(user.room);
+            
+            socket.emit('message', generateMessage('Adm', 'E aí? Seja bem-vindo!'));
+            socket.broadcast.to(user.room).emit('message', generateMessage('Adm', `${user.username} acabou de aparecer!`));
+            io.to(user.room).emit('roomData', {
+                room: user.room,
+                users: getUsersInRoom(user.room),
+            });
 
-        socket.emit('message', generateMessage('Adm', 'E aí? Seja bem-vindo!'))
+            callback(null, { user, password });
+        });
+    });
 
-        socket.broadcast.to(user.room).emit('message', generateMessage('Adm', `${user.username} acabou de aparecer!`))
-
-        io.to(user.room).emit('roomData', {
-            room: user.room,
-            users: getUsersInRoom(user.room)
-        })
-
-        callback()
-    })
 
     socket.on('sendMessage', (message, callback) => {
         const user = getUser(socket.id)
