@@ -87,6 +87,20 @@ const addUser = ({ id, username, password, room }, callback) => {
                 users.push(existingUser)
             }
 
+
+            database.query('INSERT INTO room (name) VALUES (?)', [room], (error, result) => {
+                if (error) {
+                    return callback(error)
+                }
+
+                const roomId = result.insertId
+
+                database.query('INSERT INTO user_room (user_id_fk, room_id_fk) VALUES (?, ?)', [existingUser.id, roomId], (error, result) => {
+                    if (error) {
+                        return callback(error)
+                    }
+                })
+            })
             return callback(null, { user })
         } else {
             // O usuário não existe, criar novo usuário
