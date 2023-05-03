@@ -47,8 +47,8 @@ Os serviços da aplicação e seus endereços estão listados na tabela abaixo:
 
 | Serivço         | URL                                                |
 | --------------- | ------------------------------------------------------ |
-| FalaTu     | [http://127.0.0.1:3000](http://127.0.0.1:3000)         |
-| mysql      | [http://127.0.0.1:3308](http://127.0.0.1:3308) |
+| FalaTu     | [http://152.67.53.18:3000](http://152.67.53.18:3000)         |
+| mysql      | [http://152.67.53.18:3306](http://152.67.53.18:3306) |
 
 
 Made with :heart: by [VazMF](https://github.com/VazMF) and [dudulacerdadl](https://github.com/dudulacerdadl) :wave:.
