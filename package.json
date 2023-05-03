@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "migrate-db": "docker compose up -d db && npm run knex-migrate",
+    "knex-migrate": "knex migrate:latest"
   },
   "author": "",
   "license": "ISC",
