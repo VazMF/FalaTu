@@ -8,7 +8,8 @@ const database = mysql.createConnection({
     password: settings.DB_PASS,
     port: settings.DB_PORT,
     database: settings.DB_DATABASE,
-    multipleStatements: true
+    multipleStatements: true,
+    connectTimeout: 120000,
 });
 
 database.connect(function(err) {
